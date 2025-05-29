@@ -1,0 +1,41 @@
+[global]
+# Configuración global de Streamlit
+development = false
+
+[server]
+# Configuración del servidor
+port = 8501
+address = "0.0.0.0"
+baseUrlPath = ""
+enableCORS = true
+enableXsrfProtection = true
+maxUploadSize = 200
+
+[browser]
+# Configuración del navegador
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
+
+[theme]
+# Tema personalizado para GCABA
+primaryColor = "#0066CC"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F8FF"
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+# Configuración del cliente
+caching = true
+displayEnabled = true
+showErrorDetails = false
+
+[logger]
+# Configuración de logging
+level = "info"
+messageFormat = "%(asctime)s %(message)s"
+
+[deprecation]
+# Configuración de deprecaciones
+showPyplotGlobalUse = false
