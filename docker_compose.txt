@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  checkpoint-seguridad:
+    build: .
+    container_name: checkpoint-seguridad-app
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./config:/app/config:ro
+      - ./reports:/app/reports
+      - ./temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - checkpoint-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Opcional: Servicio nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: checkpoint-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - checkpoint-seguridad
+    restart: unless-stopped
+    networks:
+      - checkpoint-network
+    profiles:
+      - production
+
+networks:
+  checkpoint-network:
+    driver: bridge
+    name: checkpoint-network
+
+volumes:
+  checkpoint-reports:
+    driver: local
+  checkpoint-temp:
+    driver: local
